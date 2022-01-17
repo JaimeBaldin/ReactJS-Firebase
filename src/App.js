@@ -9,6 +9,10 @@ function App() {
   const [autor, setAutor] = useState('');
   const [posts, setPosts] = useState([]);
 
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  
+
   useEffect(()=>{
     async function loadPosts(){
       await firebase.firestore().collection('posts')
@@ -121,14 +125,42 @@ function App() {
     })
   }
 
+  async function novoUsuario(){
+    await firebase.auth().createUserWithEmailAndPassword(email, senha)
+    .then((value)=>{
+      console.log(value)
+    })
+    .catch((error)=>{
+      if(error.code === 'auth/weak-password'){
+        alert('Senha muito fraca.')
+      }else if(error.code === 'auth/email-already-in-use'){
+        alert('Esse email já existe!');
+      }
+    })
+  }
+
   return (
     <div className="App">
-      <h1>Teste</h1><br/>
+      <h1>Usando Auth do Firebase</h1><br/>
+
+        <div className='container'>
+          <label>Email</label>
+          <input type="text" value={email} onChange={(e) => setEmail(e.target.value)}/><br/>
+
+          <label>Senha</label>
+          <input type="password" value={senha} onChange={(e) => setSenha(e.target.value)}/><br/>
+
+          <button onClick={novoUsuario}>Cadastrar</button>
+
+        </div>
+      
 
         <div className='container'>
 
+          <h2>Banco de Dados</h2>
+
           <label>ID: </label>
-          <input typeof='text' value={idPost} onChange={(e) => setIdPost(e.target.value)}/>
+          <input type="text" value={idPost} onChange={(e) => setIdPost(e.target.value)}/>
 
           <label>Titulo: </label>
           <textarea type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)}/>
