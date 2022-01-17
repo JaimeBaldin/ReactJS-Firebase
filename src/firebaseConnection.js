@@ -15,8 +15,8 @@ const firebaseConfig = {
   };
   
   // Initialize Firebase
-if(!firebase.app.length){
-    const app = initializeApp(firebase);
+if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfig);
 }
 
 export default firebase;  
