@@ -4,6 +4,7 @@ import firebase from './firebaseConnection';
 
 function App() {
  
+  const [idPost, setIdPost] = useState('');
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
   const [posts, setPosts] = useState([]);
@@ -93,11 +94,33 @@ function App() {
 
   }
 
+  async function editarPost(){
+    await firebase.firestore().collection('posts')
+    .doc(idPost)
+    .update({
+      titulo: titulo,
+      autor: autor
+    })
+    .then(()=>{
+      console.log('DADOS ATUALIZADOS');
+      setIdPost('');
+      setTitulo('');
+      setAutor('');
+    })
+    .catch(()=>{
+      console.log('ERRO')
+    })
+    
+  }
+
   return (
     <div className="App">
       <h1>Teste</h1><br/>
 
         <div className='container'>
+
+          <label>ID: </label>
+          <input typeof='text' value={idPost} onChange={(e) => setIdPost(e.target.value)}/>
 
           <label>Titulo: </label>
           <textarea type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)}/>
@@ -106,12 +129,15 @@ function App() {
           <textarea type="text" value={autor} onChange={(e) => setAutor(e.target.value)}/>
 
           <button onClick={ handleAdd }> Cadastrar</button><br/>
-          <button onClick={ buscarPost }> Buscar Post</button>
+          <button onClick={ buscarPost }> Buscar Post</button><br/>
+          <button onClick={ editarPost }>Editar</button>
+
 
           <ul>
             {posts.map((post)=>{
               return(
                 <li key={post.id}>
+                  <span>ID - {post.id}</span><br/>
                   <span>Titulo: {post.titulo}</span><br/>
                   <span>Autor: {post.autor}</span><br/> <br/>
                 </li>
